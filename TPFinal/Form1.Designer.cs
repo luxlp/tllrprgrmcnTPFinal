@@ -65,6 +65,7 @@
             this.CajaTexto.Size = new System.Drawing.Size(218, 64);
             this.CajaTexto.TabIndex = 1;
             this.CajaTexto.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.CajaTexto.TextChanged += new System.EventHandler(this.CajaTexto_TextChanged);
             // 
             // flowLayoutPanel1
             // 

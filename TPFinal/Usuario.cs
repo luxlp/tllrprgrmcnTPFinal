@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TPFinal
 {
-    class Usuario
+    public class Usuario
     {
         private string iNombre;
         private string iCategoria;

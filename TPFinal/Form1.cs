@@ -70,5 +70,10 @@ namespace TPFinal
             f2.Show(); 
             Hide(); 
         }
+
+        private void CajaTexto_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

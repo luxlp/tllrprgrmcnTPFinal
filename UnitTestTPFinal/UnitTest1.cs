@@ -1,4 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading.Tasks;
+using System.Web;
+using TPFinal;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace UnitTestTPFinal
@@ -9,10 +17,31 @@ namespace UnitTestTPFinal
         [TestMethod]
         public void TestLogin()
         {
-            TPFinal.Fachada iFachada = new TPFinal.Fachada();
+            Fachada iFachada = new Fachada();
             string DNI = "12345678";
-            string Pass = "1234";
-            
+            string PIN = "1234";
+            Usuario iUsuario=iFachada.Login(DNI, PIN);
+            Assert.AreEqual(iUsuario.Nombre,"Juan Amador");
+        }
+
+        [TestMethod]
+        public void TestLoginFallido()
+        {
+            Fachada iFachada = new Fachada();
+            string DNI = "12345678";
+            string PIN = "0000";
+            Usuario iUsuario = iFachada.Login(DNI, PIN);
+            Assert.AreEqual(iUsuario, null);
+        }
+
+        [TestMethod]
+        public void TestTarjetas()
+        {
+            Fachada iFachada = new Fachada();
+            string DNI = "12345679";
+            IList<Tarjeta> iLista = iFachada.ObtenerTarjetas(DNI);
+            Tarjeta TarjetaDevuelta = iLista.First();
+            Assert.AreEqual(TarjetaDevuelta.Nombre, "Tarjeta Mastercard Banco del Sur");
         }
     }
 }
