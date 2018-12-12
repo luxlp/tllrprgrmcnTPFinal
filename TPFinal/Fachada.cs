@@ -74,7 +74,7 @@ namespace TPFinal
             }
         }
 
-        public dynamic ObtenerTarjetas(string DNI)
+        public List<Product> ObtenerTarjetas(string DNI)
         {
             var mUrl = ("https://my-json-server.typicode.com/utn-frcu-isi-tdp/tas-db/products?id=" + DNI);
 
@@ -91,10 +91,19 @@ namespace TPFinal
 
                 // Se parsea la respuesta y se serializa a JSON a un objeto dynamic
                 dynamic mResponseJSON = JsonConvert.DeserializeObject(reader.ReadToEnd());
-                
+
                 if (mResponseJSON.Count >= 1)
                 {
-                    return mResponseJSON;
+                    List<Product> iLista = new List<Product>();
+                    foreach (var obj in mResponseJSON[0].response.product)
+                    {
+                        string iNumero = obj.number;
+                        string iNombre = obj.name;
+                        string iTipo = obj.type;
+                        Product iTarjeta = new Product(iNumero, iNombre, iTipo);
+                        iLista.Add(iTarjeta);
+                    }
+                    return iLista;
                 }
                 else
                 {
@@ -102,18 +111,71 @@ namespace TPFinal
                 }
             }
         }
-        public List<Product> ListaTarjetas (dynamic Json)
+
+        public string SaldoCuentaCorriente(string DNI)
         {
-            List<Product> iLista = new List<Product>();
-            foreach (var obj in Json[0].response.product)
+            var mUrl = ("https://my-json-server.typicode.com/utn-frcu-isi-tdp/tas-db/account-balance?id=" + DNI);
+
+            // Se crea el request http
+            HttpWebRequest mRequest = (HttpWebRequest)WebRequest.Create(mUrl);
+
+            // Se ejecuta la consulta
+            WebResponse mResponse = mRequest.GetResponse();
+
+            // Se obtiene los datos de respuesta
+            using (Stream responseStream = mResponse.GetResponseStream())
             {
-                string iNumero = obj.number;
-                string iNombre = obj.name;
-                string iTipo = obj.type;
-                Product iTarjeta = new Product(iNumero,iNombre,iTipo);
-                iLista.Add(iTarjeta);
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+
+                // Se parsea la respuesta y se serializa a JSON a un objeto dynamic
+                dynamic mResponseJSON = JsonConvert.DeserializeObject(reader.ReadToEnd());
+
+                if (mResponseJSON.Count >= 1)
+                {
+                    string iSaldo = mResponseJSON[0].response.balance;
+                    return iSaldo;
+                }
+                else
+                {
+                    return null;
+                }
             }
-            return iLista;
+        }
+        public List<Movement> UltimosMovimientos(string DNI)
+        {
+            var mUrl = ("https://my-json-server.typicode.com/utn-frcu-isi-tdp/tas-db/account-movements?id=" + DNI);
+
+            // Se crea el request http
+            HttpWebRequest mRequest = (HttpWebRequest)WebRequest.Create(mUrl);
+
+            // Se ejecuta la consulta
+            WebResponse mResponse = mRequest.GetResponse();
+
+            // Se obtiene los datos de respuesta
+            using (Stream responseStream = mResponse.GetResponseStream())
+            {
+                StreamReader reader = new StreamReader(responseStream, Encoding.UTF8);
+
+                // Se parsea la respuesta y se serializa a JSON a un objeto dynamic
+                dynamic mResponseJSON = JsonConvert.DeserializeObject(reader.ReadToEnd());
+
+                if (mResponseJSON.Count >= 1)
+                {
+                    List<Movement> iLista = new List<Movement>();
+                    foreach (var obj in mResponseJSON[0].response.movements)
+                    {
+                        string iDate = obj.date;
+                        string iAmount = obj.amount;
+                        Movement iMovimiento = new Movement(iDate, iAmount);
+                        iLista.Add(iMovimiento);
+                    }
+                    return iLista;
+                }
+                else
+                {
+                    return null;
+                }
+            }
         }
     }
 }

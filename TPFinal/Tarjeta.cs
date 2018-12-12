@@ -20,6 +20,5 @@ namespace TPFinal
             this.type = pType;
         }
     }
-
     
 }
