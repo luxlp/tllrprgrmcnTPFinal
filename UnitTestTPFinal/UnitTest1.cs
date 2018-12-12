@@ -39,9 +39,10 @@ namespace UnitTestTPFinal
         {
             Fachada iFachada = new Fachada();
             string DNI = "12345679";
-            IList<Tarjeta> iLista = iFachada.ObtenerTarjetas(DNI);
-            Tarjeta TarjetaDevuelta = iLista.First();
-            Assert.AreEqual(TarjetaDevuelta.Nombre, "Tarjeta Mastercard Banco del Sur");
+            dynamic Json = iFachada.ObtenerTarjetas(DNI);
+            List<Product> iLista = iFachada.ListaTarjetas(Json);
+            Product TarjetaDevuelta = iLista.First();
+            Assert.AreEqual(TarjetaDevuelta.name, "Tarjeta Mastercard Banco del Sur");
         }
     }
 }

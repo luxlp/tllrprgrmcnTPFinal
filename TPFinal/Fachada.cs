@@ -47,7 +47,7 @@ namespace TPFinal
         }
         public object BlanquearPin(string NumeroTarjeta)
         {
-            var mUrl = ("https://my-json-server.typicode.com/utn-frcu-isi-tdp/tas-db/product-reset?number=NUMBER" + NumeroTarjeta);
+            var mUrl = ("https://my-json-server.typicode.com/utn-frcu-isi-tdp/tas-db/product-reset?number=" + NumeroTarjeta);
 
             // Se crea el request http
             HttpWebRequest mRequest = (HttpWebRequest)WebRequest.Create(mUrl);
@@ -74,7 +74,7 @@ namespace TPFinal
             }
         }
 
-        public IList<Tarjeta> ObtenerTarjetas(string DNI)
+        public dynamic ObtenerTarjetas(string DNI)
         {
             var mUrl = ("https://my-json-server.typicode.com/utn-frcu-isi-tdp/tas-db/products?id=" + DNI);
 
@@ -91,30 +91,29 @@ namespace TPFinal
 
                 // Se parsea la respuesta y se serializa a JSON a un objeto dynamic
                 dynamic mResponseJSON = JsonConvert.DeserializeObject(reader.ReadToEnd());
-
+                
                 if (mResponseJSON.Count >= 1)
                 {
-                    int i = 0;
-                    Tarjeta iTarjeta;
-                    string iUltimosDigitos;
-                    string iNombre;
-                    string iTipo;
-                    List<Tarjeta> ListaTarjetas = new List<Tarjeta>();
-                    while (mResponseJSON[i].name != null)
-                    {
-                        iUltimosDigitos = mResponseJSON[i].number;
-                        iNombre = mResponseJSON[i].name;
-                        iTipo = mResponseJSON[i].type;
-                        iTarjeta = new Tarjeta(iNombre, iTipo, iUltimosDigitos);
-                        ListaTarjetas.Add(iTarjeta);
-                    }
-                    return ListaTarjetas;
+                    return mResponseJSON;
                 }
                 else
                 {
                     return null;
                 }
             }
+        }
+        public List<Product> ListaTarjetas (dynamic Json)
+        {
+            List<Product> iLista = new List<Product>();
+            foreach (var obj in Json[0].response.product)
+            {
+                string iNumero = obj.number;
+                string iNombre = obj.name;
+                string iTipo = obj.type;
+                Product iTarjeta = new Product(iNumero,iNombre,iTipo);
+                iLista.Add(iTarjeta);
+            }
+            return iLista;
         }
     }
 }
